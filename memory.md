@@ -39,7 +39,7 @@ no SOL and no crypto knowledge produce a record that only their key could have
 produced. If a future change makes the relayer the signer, the attestation stops
 meaning anything and the project loses its reason to be on a chain at all.
 
-`api/relay.ts` therefore validates before signing: exactly one instruction,
+`api/relay.mts` therefore validates before signing: exactly one instruction,
 addressed to the Memo program, within 566 bytes, carrying a signer that is not
 the relayer. Without those checks the endpoint is an open fee payer that anyone
 can drain.

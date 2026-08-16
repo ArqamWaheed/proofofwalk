@@ -32,7 +32,7 @@ This repository is an entry in the DEV Weekend Challenge: Dog Days Edition.
 
 - Do not change `canonicalise()` in `src/lib/trace.ts`. It defines the hashed
   bytes; changing it silently invalidates every attestation already committed.
-- Do not remove the instruction validation in `api/relay.ts`.
+- Do not remove the instruction validation in `api/relay.mts`.
 - Do not commit `.relayer-key.json` or any `.env` file.
 - Do not force push or rewrite published history.
 
