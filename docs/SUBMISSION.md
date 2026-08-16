@@ -37,9 +37,34 @@ does not close it.
 
 ## Demo
 
-**Live app:** <<PASTE VERCEL URL>>
+**Live app:** https://proof-of-walk-jade.vercel.app
 
 **Walkthrough video:** <<PASTE UNLISTED YOUTUBE URL>>
+
+### Verify the walk I committed, without taking mine
+
+Everything above is checkable. This attestation is on devnet right now:
+
+```
+2q3GiHfvYBPyh8dNdYMWRTz6aPWQjjhAdJAm12g4UQ1CYAzZcNZNVAgDHJE4FmLUNVN1Qw7fzVgmgAUoSAHFhYST
+```
+
+The trace it was made from is committed at [`docs/example-walk.json`](https://github.com/ArqamWaheed/SecondChance/blob/main/docs/example-walk.json).
+Open the Verify tab, paste that signature, load that file, and you get **Match**.
+
+Then change a single digit of a single coordinate and verify again. One fix moved
+about 11 metres — the smallest edit the 5-decimal-place pinning can even
+represent — and the hash goes from
+
+```
+bcea241329168f0925120da1661ef74518abedd038ac481620c471a0e4d23fef
+```
+to
+```
+e5e28492bb238302d9e95ee36657b251063efaa3ceff723cf31ea1f62edc5d69
+```
+
+which the app shows you as two visibly different seals, side by side.
 
 No wallet, no extension, and no SOL are required to try it. Open it on a phone
 and take a real walk, or use **Run a simulated walk** on a desktop with no GPS —

@@ -11,6 +11,23 @@ The GPS trace never leaves the device. Only the hash goes on-chain. That is enou
 for the owner to verify the trace they were shown is the trace that was committed —
 and it means the walker cannot quietly produce a better walk after the fact.
 
+**[Try it](https://proof-of-walk-jade.vercel.app)** — no wallet, no extension, no SOL. On a desktop with no GPS,
+use *Run a simulated walk*; synthetic routes are flagged `sim: 1` on chain so they
+stay distinguishable from real ones.
+
+### Check my work
+
+This attestation is on devnet now:
+
+```
+2q3GiHfvYBPyh8dNdYMWRTz6aPWQjjhAdJAm12g4UQ1CYAzZcNZNVAgDHJE4FmLUNVN1Qw7fzVgmgAUoSAHFhYST
+```
+
+The trace behind it is `docs/example-walk.json`. Paste the signature, load the
+file, and the Verify tab says **Match**. Change one digit of one coordinate —
+about 11 metres, the smallest edit the 5dp pinning can represent — and it says
+**No match**, with both hashes drawn side by side.
+
 Built for the [DEV Weekend Challenge: Dog Days Edition](https://dev.to/challenges/weekend-2026-08-13).
 
 ## Why a blockchain, honestly

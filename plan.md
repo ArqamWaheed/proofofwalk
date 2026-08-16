@@ -4,8 +4,7 @@
 
 ## Current milestone
 
-**M4 — Deploy.** Blocked on the user's Vercel account, and on the repo being
-published at all — see Blockers.
+**M5 — Submission.** M4 is done and verified end to end on live devnet.
 
 ## Completed
 
@@ -41,18 +40,27 @@ published at all — see Blockers.
   finish, rename, download, and hand over a trace whose hash no longer matched
 - Raised `--chalk-faint` to #8386ac; the previous value failed AA at 3.96:1
 
-## In progress
+### M4 — Deploy ✅
+- Live at https://proof-of-walk-jade.vercel.app
+- `SOLANA_RELAYER_SECRET` set; `/api/relayer` returns the relayer public key
+- Fixed a production-only crash: both functions died at import with
+  `ERR_REQUIRE_ESM` because Vercel compiles `api/*.ts` to CommonJS and
+  `rpc-websockets`'s `.cjs` build requires an ESM-only `uuid@14`. Pinned via
+  `overrides.rpc-websockets.uuid` to `^9.0.1`
+- **Verified end to end on live devnet 2026-08-16:** simulated walk committed
+  (`2q3GiHfvYBPyh8dN…`), walker key is the memo signer, Verify returns **Match**, and a
+  single coordinate moved 0.0001° returns **No match** with both seals rendered.
+  These were the last untested paths in the app
 
-### M4 — Deploy
-- [x] `vercel.json` and `.env.example`
-- [ ] Vercel project link **(needs the user's account)**
-- [ ] `SOLANA_RELAYER_SECRET` set as a Vercel environment variable
-- [ ] Live URL confirmed in a fresh incognito window, desktop and phone
+## In progress
 
 ## Pending
 
 ### M5 — Submission
-- [ ] 60–75s screen recording, unlisted YouTube
+- [x] Post drafted against the official template (`docs/SUBMISSION.md`)
+- [x] Recording shot list (`docs/RECORDING.md`)
+- [x] Reproducible example committed (`docs/example-walk.json` + signature in README)
+- [ ] 60–75s screen recording, unlisted YouTube **(user)**
 - [x] Cover image, 1000×420 (`docs/cover.png`, source `docs/cover.html`)
 - [ ] DEV post using the official template verbatim, all five required sections
 - [ ] Tags: `devchallenge`, `weekendchallenge` — exactly the pair the official
