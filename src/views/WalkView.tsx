@@ -1,17 +1,23 @@
 import { useMemo, useState } from "react";
 import { Connection, PublicKey } from "@solana/web3.js";
 import { RouteSketch } from "../components/RouteSketch";
+import { Seal } from "../components/Seal";
+import { Icon } from "../components/Icon";
 import { useWalk } from "../lib/useWalk";
 import { simulateWalk } from "../lib/simulate";
 import { durationSeconds, totalMetres, type Trace } from "../lib/trace";
 import {
-  buildAttestation, buildWalkTransaction, encodeMemo, loadWalker,
+  MEMO_MAX_BYTES, buildAttestation, buildWalkTransaction, encodeMemo, loadWalker,
   type Attestation,
 } from "../lib/attest";
 import { RPC_URL, explorerTx } from "../lib/config";
 
 const fmtDuration = (s: number) =>
-  `${Math.floor(s / 60)}m ${String(s % 60).padStart(2, "0")}s`;
+  `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+
+const shortKey = (key: string) => `${key.slice(0, 4)}…${key.slice(-4)}`;
+
+type Step = "todo" | "now" | "done";
 
 export function WalkView() {
   const { state, fixes, simulated, error, start, finish, runSimulated, reset } = useWalk();
@@ -26,6 +32,12 @@ export function WalkView() {
 
   const distance = totalMetres(fixes);
   const duration = durationSeconds(fixes);
+
+  const steps: Array<{ label: string; state: Step }> = [
+    { label: "record", state: state === "finished" ? "done" : state === "recording" ? "now" : "todo" },
+    { label: "seal", state: signature ? "done" : attestation ? "now" : "todo" },
+    { label: "commit", state: signature ? "done" : attestation ? "todo" : "todo" },
+  ];
 
   async function handleFinish(sim: boolean) {
     const walkFixes = sim ? simulateWalk() : fixes;
@@ -84,68 +96,132 @@ export function WalkView() {
     URL.revokeObjectURL(url);
   }
 
+  const memoBytes = attestation
+    ? new TextEncoder().encode(JSON.stringify(attestation)).length
+    : 0;
+
   return (
     <section className="stack">
+      <ol className="steps">
+        {steps.map((step) => (
+          <li key={step.label} className="steps__item" data-state={step.state}>
+            <span className="steps__pip" />
+            {step.label}
+          </li>
+        ))}
+      </ol>
+
       <label className="field">
-        <span>Dog</span>
-        <input value={dog} onChange={(e) => setDog(e.target.value)}
-          disabled={state === "recording"} maxLength={40} />
+        <span className="field__label">Dog</span>
+        <input
+          value={dog}
+          onChange={(e) => setDog(e.target.value)}
+          /* Locked once recording starts: the name is inside the hashed trace,
+             so editing it afterwards would break the walk it belongs to. */
+          disabled={state !== "idle"}
+          maxLength={40}
+        />
       </label>
 
       {state === "idle" && (
-        <div className="row">
-          <button className="btn btn--primary" onClick={start}>Start walk</button>
-          <button className="btn" onClick={() => handleFinish(true)}>
-            Run a simulated walk
-          </button>
-        </div>
+        <>
+          <div className="row">
+            <button className="btn btn--go" onClick={start}>
+              <Icon name="route" size={17} />
+              Start walk
+            </button>
+            <button className="btn" onClick={() => handleFinish(true)}>
+              Run a simulated walk
+            </button>
+          </div>
+          <p className="hint">
+            Walking keeps the phone's location on until you finish. On a desktop
+            with no GPS, the simulated walk produces a synthetic route and marks
+            it as one on chain.
+          </p>
+        </>
       )}
 
       {state === "recording" && (
         <>
-          <div className="stats">
-            <Stat label="Elapsed" value={fmtDuration(duration)} />
-            <Stat label="Distance" value={`${distance} m`} />
-            <Stat label="Fixes" value={String(fixes.length)} />
+          <div className="readout readout--live">
+            <Cell label="Elapsed" value={fmtDuration(duration)} />
+            <Cell label="Distance" value={`${distance} m`} />
+            <Cell label="Fixes" value={String(fixes.length)} />
           </div>
-          <RouteSketch fixes={fixes} />
-          <button className="btn btn--primary" onClick={() => handleFinish(false)}
-            disabled={fixes.length < 2}>
+          <RouteSketch fixes={fixes} live />
+          <button
+            className="btn btn--go btn--wide"
+            onClick={() => handleFinish(false)}
+            disabled={fixes.length < 2}
+          >
             Finish walk
           </button>
-          {fixes.length < 2 && <p className="hint">Waiting for a second GPS fix…</p>}
+          {fixes.length < 2 && (
+            <p className="hint">Waiting for a second GPS fix before there is a route to seal.</p>
+          )}
         </>
       )}
 
-      {error && <p className="error">{error}</p>}
+      {error && (
+        <p className="notice notice--bad" role="alert">
+          <Icon name="alert" size={17} />
+          {error}
+        </p>
+      )}
 
       {state === "finished" && attestation && (
         <>
           {simulated && (
-            <p className="banner">
-              Simulated walk. This is a synthetic route, and the attestation is
-              flagged <code>sim: 1</code> so it stays distinguishable on chain.
+            <p className="notice notice--warn">
+              <Icon name="alert" size={17} />
+              <span>
+                Simulated walk. The route is synthetic and the attestation carries{" "}
+                <code>sim: 1</code>, so it stays distinguishable from a real one on chain.
+              </span>
             </p>
           )}
-          <div className="stats">
-            <Stat label="Duration" value={fmtDuration(attestation.dur)} />
-            <Stat label="Distance" value={`${attestation.dist} m`} />
-            <Stat label="Fixes" value={String(attestation.n)} />
+
+          <div className="readout">
+            <Cell label="Duration" value={fmtDuration(attestation.dur)} />
+            <Cell label="Distance" value={`${attestation.dist} m`} />
+            <Cell label="Fixes" value={String(attestation.n)} />
           </div>
+
           <RouteSketch fixes={fixes} />
 
-          <div className="panel">
-            <h3>What goes on chain</h3>
-            <pre className="memo">{JSON.stringify(attestation, null, 2)}</pre>
-            <p className="hint">
-              {new TextEncoder().encode(JSON.stringify(attestation)).length} of 566 bytes.
-              The route itself is not in here — only its SHA-256.
+          <div className="card rise">
+            <h2 className="card__title">
+              <Icon name="link" size={17} />
+              What goes on chain
+            </h2>
+            <Seal hash={attestation.h} label="this walk" />
+            <p className="card__body">
+              The route is not in here. Only this hash, the totals, and the dog's
+              name travel to the chain.
+            </p>
+            <details>
+              <summary className="field__label" style={{ cursor: "pointer" }}>
+                Show the memo
+              </summary>
+              <pre className="memo" style={{ marginTop: "0.75rem" }}>
+                {JSON.stringify(attestation, null, 2)}
+              </pre>
+            </details>
+            <p className="meter">
+              <span>{memoBytes} / {MEMO_MAX_BYTES} bytes</span>
+              <span className="meter__track">
+                <span
+                  className="meter__fill"
+                  style={{ width: `${Math.min(100, (memoBytes / MEMO_MAX_BYTES) * 100)}%` }}
+                />
+              </span>
             </p>
           </div>
 
           {!signature && (
             <div className="row">
-              <button className="btn btn--primary" onClick={commit} disabled={busy}>
+              <button className="btn btn--seal" onClick={commit} disabled={busy}>
                 {busy ? "Committing…" : "Commit to Solana"}
               </button>
               <button className="btn" onClick={() => { reset(); setAttestation(null); }}>
@@ -153,24 +229,45 @@ export function WalkView() {
               </button>
             </div>
           )}
-          {commitError && <p className="error">{commitError}</p>}
+
+          {commitError && (
+            <p className="notice notice--bad" role="alert">
+              <Icon name="alert" size={17} />
+              <span>
+                {commitError} — the walk is still here, so you can commit again.
+              </span>
+            </p>
+          )}
 
           {signature && (
-            <div className="panel panel--ok">
-              <h3>Committed</h3>
-              <p>
-                Signed by <code>{walker.publicKey.toBase58().slice(0, 8)}…</code> —
-                the walker's key, not the server's.
+            <div className="card card--ok rise">
+              <h2 className="card__title">
+                <Icon name="check" size={18} />
+                Committed
+              </h2>
+              <p className="card__body">
+                Signed by <code>{shortKey(walker.publicKey.toBase58())}</code> — the
+                walker's key, not the server's. The server paid the fee and vouched
+                for nothing.
               </p>
               <div className="row">
-                <a className="btn btn--primary" href={explorerTx(signature)}
-                  target="_blank" rel="noreferrer">View on Solana Explorer</a>
-                <button className="btn" onClick={downloadTrace}>Download the trace</button>
+                <a
+                  className="btn btn--seal"
+                  href={explorerTx(signature)}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Icon name="external" size={16} />
+                  View on Solana Explorer
+                </a>
+                <button className="btn" onClick={downloadTrace}>
+                  <Icon name="download" size={16} />
+                  Download the trace
+                </button>
               </div>
               <p className="hint">
-                Send the trace file to the owner. They can check it against this
-                transaction on the Verify tab — and the hash will only match the
-                route that was actually recorded.
+                Send the owner the trace file and this signature. On the Verify
+                tab the hash will match this walk and no other.
               </p>
             </div>
           )}
@@ -180,11 +277,11 @@ export function WalkView() {
   );
 }
 
-function Stat({ label, value }: { label: string; value: string }) {
+function Cell({ label, value }: { label: string; value: string }) {
   return (
-    <div className="stat">
-      <span className="stat__label">{label}</span>
-      <span className="stat__value">{value}</span>
+    <div className="readout__cell">
+      <span className="readout__label">{label}</span>
+      <span className="readout__value">{value}</span>
     </div>
   );
 }
