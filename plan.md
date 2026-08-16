@@ -54,6 +54,26 @@
 
 ## In progress
 
+### M6 — Competitive hardening ✅
+Field research on 2026-08-16 across ~34 Dog Days entries: the field is dominated
+by AI dog-personality apps (~8 near-identical "what is your dog thinking"
+builds), breed classifiers (~4), and games. Tag counts across the tag page:
+gemini 5, googleai 4, elevenlabs 2, snowflake 2, **solana 0**. No entry mentions
+blockchain, attestation, or verification. Two consequences:
+
+- **Best Use of Solana is uncontested**, but an unopposed entry still has to
+  earn it. The chain has to be visibly load-bearing, not decorative.
+- Every other entry outputs something subjective and unfalsifiable. Ours is the
+  only one producing a checkable artifact — so the checking must be effortless,
+  because our real risk was never being wrong, it was being skimmed.
+
+Shipped in response:
+- `?tx=` deep links open straight to the verifier with the signature filled in
+- *Load the example walk* pulls a genuinely committed walk from `public/`
+- *Now edit one coordinate* lets a reader break it themselves in one click
+- Commit-freshness reporting (`src/lib/freshness.ts`, 9 tests) closing the
+  replay gap: a hash proves which route, never when
+
 ## Pending
 
 ### M5 — Submission

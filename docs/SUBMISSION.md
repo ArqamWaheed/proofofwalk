@@ -41,9 +41,15 @@ does not close it.
 
 **Walkthrough video:** <<PASTE UNLISTED YOUTUBE URL>>
 
-### Verify the walk I committed, without taking mine
+### Verify it yourself, in two clicks
 
-Everything above is checkable. This attestation is on devnet right now:
+**[Open a committed walk, ready to check](https://proof-of-walk-jade.vercel.app/?tx=2q3GiHfvYBPyh8dNdYMWRTz6aPWQjjhAdJAm12g4UQ1CYAzZcNZNVAgDHJE4FmLUNVN1Qw7fzVgmgAUoSAHFhYST)**
+
+The link opens the verifier with a real devnet signature filled in. *Load the
+example walk* → *Verify* → **Match**. Then *Now edit one coordinate* → *Verify*
+→ **No match**, with both hashes drawn as bars so you can see them diverge.
+
+This attestation is on devnet right now:
 
 ```
 2q3GiHfvYBPyh8dNdYMWRTz6aPWQjjhAdJAm12g4UQ1CYAzZcNZNVAgDHJE4FmLUNVN1Qw7fzVgmgAUoSAHFhYST
@@ -174,6 +180,38 @@ genuine mismatch, an unreadable trace, a transaction that isn't a walk
 attestation at all, and no such transaction. Only one of those is an accusation,
 and the UI colours it accordingly — a malformed file gets a neutral card, never a
 red one.
+
+### The gap I found late: a hash has no opinion about *when*
+
+The SHA-256 proves *which* route was recorded. It says nothing about when — and
+that leaves a gap an adversarial walker can stand in. Record one genuinely
+excellent walk. Keep the trace. Commit it again next Tuesday. The hash matches
+perfectly, because it really is that walk. Just not this week's.
+
+The fix falls out of what a blockchain actually gives you. The block timestamp
+is the one clock in the system the walker doesn't control, so the verifier now
+compares it against the trace's own end time:
+
+```ts
+const walkEnded = attestation.t0 + attestation.dur;
+const delaySeconds = blockTime - walkEnded;
+```
+
+The example walk reports *"Committed 28 seconds after the walk ended — while it
+was still fresh."* A trace committed six days after it was recorded says so, and
+a block written **before** the walk could have ended is called out separately as
+either clock skew or a fabricated timestamp.
+
+It reports a fact, not a verdict. A long delay has innocent explanations — no
+signal until the walker got home, a relay that retried later. The interface
+states the gap and lets the owner decide, because "this took a while" and "you
+are lying to me" are not the same sentence, and this project's whole discipline
+is refusing to collapse the two.
+
+Worth noting this is the second time that discipline changed the design. The
+first was malformed-versus-mismatch; this is replay-versus-delay. Both are the
+same mistake in different clothes: letting the system imply an accusation it
+cannot actually support.
 
 ### No map tiles, on purpose
 

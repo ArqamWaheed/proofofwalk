@@ -11,8 +11,16 @@ const TABS: ReadonlyArray<{ id: Tab; label: string; icon: "route" | "shield" }> 
   { id: "verify", label: "Verify", icon: "shield" },
 ];
 
+/**
+ * A ?tx=… link is someone being handed a walk to check, so open on the tab that
+ * checks it. Landing them on the recorder and asking them to find Verify is the
+ * difference between a claim that gets tested and one that gets skimmed.
+ */
+const initialTab = (): Tab =>
+  new URLSearchParams(window.location.search).has("tx") ? "verify" : "walk";
+
 export default function App() {
-  const [tab, setTab] = useState<Tab>("walk");
+  const [tab, setTab] = useState<Tab>(initialTab);
   const tabRefs = useRef<Record<Tab, HTMLButtonElement | null>>({ walk: null, verify: null });
 
   // Tablists are expected to move between tabs with the arrow keys; without
