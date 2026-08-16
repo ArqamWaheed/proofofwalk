@@ -15,13 +15,17 @@ and do not rush the two seals.
 
 ---
 
-### 0:00–0:08 — The problem
+### 0:00–0:10 — The problem, then immediately the proof
 
-**Show:** the landing hero.
+**Show:** the landing hero, then open the pre-loaded verify link.
 
-> "You pay someone to walk your dog. They tell you they went. You weren't there."
+> "You pay someone to walk your dog. They say they went. You weren't there."
 
-Let the headline sit on screen for a beat — it says the rest.
+Do **not** open on the recorder. Open on
+`?tx=2q3GiHfvYBPyh8dNdYMWRTz6aPWQjjhAdJAm12g4UQ1CYAzZcNZNVAgDHJE4FmLUNVN1Qw7fzVgmgAUoSAHFhYST`,
+press *Load the example walk*, press *Verify*, and let **Match** land inside the
+first fifteen seconds. Lead with the payoff; explain how afterwards. A judge who
+stops watching at 0:20 should already have seen the thing work.
 
 ### 0:08–0:20 — Record
 
@@ -68,7 +72,17 @@ Stop on the two seals. Cyan on top, red below, obviously different. **Hold for a
 full three seconds.** This single frame carries the whole argument; everything
 before it is setup.
 
-### 1:10–1:15 — The honest close
+### 1:02–1:12 — The log: it's about the dog
+
+**Show:** the Log tab, *Show the walks*.
+
+> "And it isn't one receipt. It's Rufus's record — every walk this key ever
+> committed, that the walker can't quietly revise."
+
+Let the totals sit for a beat. This is the frame that says the project is about
+a dog and not about cryptography.
+
+### 1:12–1:18 — The honest close
 
 **Show:** scroll to the footer line.
 
@@ -82,3 +96,10 @@ before it is setup.
 - Show the Vercel dashboard, the relayer key, or any environment variable
 - Show a real walk with your actual home at one end of the line
 - Narrate the stack. Nobody is scoring you on "React and Vite"
+- Spend more than 8 seconds before the first **Match** appears
+
+## If you have 15 spare seconds
+
+Run `npm run verify -- <signature> docs/example-walk.json` in a terminal and
+show it printing MATCH. It makes the point nothing else can: you don't have to
+trust the website either. Worth cutting the commit sequence short to fit it.
