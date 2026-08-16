@@ -2,7 +2,7 @@
 title: "Proof of Walk: your dog walker says they went. This makes the walk say so too."
 published: false
 tags: devchallenge, weekendchallenge
-cover_image: <<UPLOAD docs/cover.png TO THE DEV EDITOR AND PASTE THE URL HERE>>
+cover_image: <<UPLOAD docs/cover@2x.png TO THE DEV EDITOR AND PASTE THE URL HERE>>
 ---
 
 *This is a submission for [Weekend Challenge: Dog Days Edition](https://dev.to/challenges/weekend-2026-08-13)*

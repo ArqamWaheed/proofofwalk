@@ -6,63 +6,56 @@
 <style>
   * { box-sizing: border-box; margin: 0; }
   html, body { width: 1000px; height: 420px; overflow: hidden; }
-  body {
-    position: relative;
-    background: #0e1020;
-    font-family: "Instrument Sans", system-ui, sans-serif;
-    color: #eceaf6;
-  }
-  .wash {
-    position: absolute; inset: 0;
+  body { position: relative; background: #0e1020; font-family: "Instrument Sans", system-ui, sans-serif; color: #eceaf6; }
+  .wash { position: absolute; inset: 0;
     background:
-      radial-gradient(60% 90% at 8% 0%, rgba(255,160,70,.16), transparent 68%),
-      radial-gradient(55% 80% at 96% 12%, rgba(111,227,232,.13), transparent 70%);
-  }
-  .frame { position: relative; height: 100%; padding: 44px 56px; display: flex; flex-direction: column; }
+      radial-gradient(58% 88% at 6% 0%, rgba(255,160,70,.17), transparent 66%),
+      radial-gradient(52% 78% at 97% 10%, rgba(111,227,232,.13), transparent 70%); }
+  .frame { position: relative; height: 100%; padding: 34px 46px 30px; display: flex; flex-direction: column; }
+
   .top { display: flex; align-items: center; justify-content: space-between; }
-  .mark { display: flex; align-items: center; gap: 10px;
-    font-family: "JetBrains Mono", monospace; font-size: 13px; font-weight: 500;
-    letter-spacing: .18em; text-transform: uppercase; color: #9ea0c0; }
+  .mark { display: flex; align-items: center; gap: 10px; font-family: "JetBrains Mono", monospace;
+    font-size: 13px; font-weight: 500; letter-spacing: .18em; text-transform: uppercase; color: #9ea0c0; }
   .mark svg { color: #ffa046; }
-  .chip { display: flex; align-items: center; gap: 7px; padding: 6px 13px;
-    border: 1px solid #2e3358; border-radius: 999px; background: rgba(111,227,232,.07);
-    font-family: "JetBrains Mono", monospace; font-size: 11.5px; letter-spacing: .13em;
-    text-transform: uppercase; color: #6fe3e8; }
+  .chip { display: flex; align-items: center; gap: 7px; padding: 5px 12px; border: 1px solid #2e3358;
+    border-radius: 999px; background: rgba(111,227,232,.07); font-family: "JetBrains Mono", monospace;
+    font-size: 11px; letter-spacing: .13em; text-transform: uppercase; color: #6fe3e8; }
   .chip i { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 
-  .mid { flex: 1; display: flex; align-items: center; gap: 48px; }
-  .claim { display: flex; flex-direction: column; gap: 16px; }
-  .eyebrow { font-family: "JetBrains Mono", monospace; font-size: 12.5px; font-weight: 500;
-    letter-spacing: .17em; text-transform: uppercase; color: #8386ac; }
-  h1 { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700;
-    font-size: 53px; line-height: 1.04; letter-spacing: -.036em; max-width: 545px; }
+  .mid { flex: 1; display: flex; align-items: center; gap: 34px; padding: 14px 0 10px; }
+  .claim { flex: 1; display: flex; flex-direction: column; gap: 13px; }
+  h1 { font-family: "Bricolage Grotesque", sans-serif; font-weight: 700; font-size: 38px;
+    line-height: 1.06; letter-spacing: -.032em; max-width: 512px; }
+  h1 em { font-style: normal; color: #ffa046; }
 
-  .route { flex: none; width: 232px; height: 232px; border-radius: 16px;
-    border: 1px solid #232746; background-color: #171a2e;
-    background-image:
-      linear-gradient(rgba(46,51,88,.5) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(46,51,88,.5) 1px, transparent 1px);
-    background-size: 26px 26px; background-position: center; }
+  .route { flex: none; width: 168px; height: 168px; border-radius: 15px; border: 1px solid #232746;
+    background-color: #171a2e;
+    background-image: linear-gradient(rgba(46,51,88,.5) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(46,51,88,.5) 1px, transparent 1px);
+    background-size: 24px 24px; background-position: center; }
   .route svg { width: 100%; height: 100%; }
-  .route .start { fill: #6fe3e8; }
-  .route .end { fill: #ffa046; }
-  .route path { fill: none; stroke: #ffa046; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+  .route path { fill: none; stroke: #ffa046; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+  .route .s { fill: #6fe3e8; } .route .e { fill: #ffa046; }
 
-  .bottom { display: flex; align-items: flex-end; justify-content: space-between; gap: 32px; }
-  .sealwrap { flex: 1; display: flex; flex-direction: column; gap: 8px; }
-  .sealhead { font-family: "JetBrains Mono", monospace; font-size: 10.5px;
-    letter-spacing: .16em; text-transform: uppercase; color: #8386ac; }
-  .bars { width: 100%; height: 30px; color: #6fe3e8; }
-  .bars rect { fill: currentColor; }
-  .tag { flex: none; text-align: right; font-family: "JetBrains Mono", monospace;
-    font-size: 11.5px; letter-spacing: .09em; color: #9ea0c0; line-height: 1.75; }
+  /* The verdict pair: the one thing no other entry in this challenge can show. */
+  .verdicts { display: grid; grid-template-columns: 1fr 1fr; gap: 26px; }
+  .v { display: flex; flex-direction: column; gap: 6px; }
+  .v__label { display: flex; align-items: center; gap: 7px; font-family: "JetBrains Mono", monospace;
+    font-size: 12.5px; font-weight: 500; letter-spacing: .13em; text-transform: uppercase; }
+  .v--ok .v__label { color: #6fe3e8; }
+  .v--bad .v__label { color: #ff7a8f; }
+  .v__bars { width: 100%; height: 40px; }
+  .v--ok .v__bars rect { fill: #6fe3e8; }
+  .v--bad .v__bars rect { fill: #ff7a8f; }
+  .v__hex { font-family: "JetBrains Mono", monospace; font-size: 10px; color: #8386ac;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 </style></head>
 <body>
 <div class="wash"></div>
 <div class="frame">
   <div class="top">
     <div class="mark">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+      <svg width="21" height="21" viewBox="0 0 24 24" fill="currentColor">
         <ellipse cx="8.6" cy="8.4" rx="2" ry="2.6"/><ellipse cx="15.4" cy="8.4" rx="2" ry="2.6"/>
         <ellipse cx="4.4" cy="12.6" rx="1.8" ry="2.3"/><ellipse cx="19.6" cy="12.6" rx="1.8" ry="2.3"/>
         <path d="M12 12.4c3.2 0 5.5 2.5 5.5 4.9 0 2-1.7 3.1-3.5 2.6a7.4 7.4 0 0 0-4 0c-1.8.5-3.5-.6-3.5-2.6 0-2.4 2.3-4.9 5.5-4.9Z"/>
@@ -73,22 +66,34 @@
   </div>
 
   <div class="mid">
-    <div class="claim"><p class="eyebrow">Your dog walker says they went.</p><h1>This makes the walk say so too.</h1></div>
+    <div class="claim">
+      <h1>Your dog walker says they went. <em>This makes the walk say so too.</em></h1>
+    </div>
     <div class="route">
       <svg viewBox="0 0 100 100">
         <path d="M20 80C22 62 38 64 42 50c4-14-4-24 8-30s28 2 28 16-14 18-12 30c2 12 14 12 16 6"/>
-        <circle class="start" cx="20" cy="80" r="4"/>
-        <circle class="end" cx="82" cy="72" r="4"/>
+        <circle class="s" cx="20" cy="80" r="4.5"/><circle class="e" cx="82" cy="72" r="4.5"/>
       </svg>
     </div>
   </div>
 
-  <div class="bottom">
-    <div class="sealwrap">
-      <div class="sealhead">the walk, sealed</div>
-      <svg class="bars" viewBox="0 0 127 32" preserveAspectRatio="none"><rect x="0" y="21.29" width="3" height="10.71"/><rect x="4" y="14.94" width="3" height="17.06"/><rect x="8" y="7.18" width="3" height="24.82"/><rect x="12" y="6.35" width="3" height="25.65"/><rect x="16" y="16.59" width="3" height="15.41"/><rect x="20" y="8.59" width="3" height="23.41"/><rect x="24" y="15.88" width="3" height="16.12"/><rect x="28" y="19.18" width="3" height="12.82"/><rect x="32" y="6.82" width="3" height="25.18"/><rect x="36" y="5.18" width="3" height="26.82"/><rect x="40" y="27.88" width="3" height="4.12"/><rect x="44" y="2.71" width="3" height="29.29"/><rect x="48" y="11.88" width="3" height="20.12"/><rect x="52" y="20.59" width="3" height="11.41"/><rect x="56" y="6.00" width="3" height="26.00"/><rect x="60" y="10.47" width="3" height="21.53"/><rect x="64" y="13.88" width="3" height="18.12"/><rect x="68" y="4.71" width="3" height="27.29"/><rect x="72" y="10.59" width="3" height="21.41"/><rect x="76" y="15.53" width="3" height="16.47"/><rect x="80" y="19.76" width="3" height="12.24"/><rect x="84" y="6.82" width="3" height="25.18"/><rect x="88" y="23.76" width="3" height="8.24"/><rect x="92" y="3.88" width="3" height="28.12"/><rect x="96" y="7.18" width="3" height="24.82"/><rect x="100" y="2.47" width="3" height="29.53"/><rect x="104" y="16.94" width="3" height="15.06"/><rect x="108" y="28.12" width="3" height="3.88"/><rect x="112" y="24.00" width="3" height="8.00"/><rect x="116" y="10.00" width="3" height="22.00"/><rect x="120" y="19.41" width="3" height="12.59"/><rect x="124" y="13.53" width="3" height="18.47"/></svg>
+  <div class="verdicts">
+    <div class="v v--ok">
+      <p class="v__label">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6.5 9.4 17.2 4 11.8"/></svg>
+        the walk that was committed
+      </p>
+      <svg class="v__bars" viewBox="0 0 127 32" preserveAspectRatio="none"><rect x="0" y="7.62" width="3" height="24.38"/><rect x="4" y="2.39" width="3" height="29.61"/><rect x="8" y="24.91" width="3" height="7.09"/><rect x="12" y="26.84" width="3" height="5.16"/><rect x="16" y="24.34" width="3" height="7.66"/><rect x="20" y="26.50" width="3" height="5.50"/><rect x="24" y="12.74" width="3" height="19.26"/><rect x="28" y="27.98" width="3" height="4.02"/><rect x="32" y="24.79" width="3" height="7.21"/><rect x="36" y="26.95" width="3" height="5.05"/><rect x="40" y="27.52" width="3" height="4.48"/><rect x="44" y="10.69" width="3" height="21.31"/><rect x="48" y="17.40" width="3" height="14.60"/><rect x="52" y="25.59" width="3" height="6.41"/><rect x="56" y="0.91" width="3" height="31.09"/><rect x="60" y="21.15" width="3" height="10.85"/><rect x="64" y="26.27" width="3" height="5.73"/><rect x="68" y="9.55" width="3" height="22.45"/><rect x="72" y="2.05" width="3" height="29.95"/><rect x="76" y="5.35" width="3" height="26.65"/><rect x="80" y="22.63" width="3" height="9.37"/><rect x="84" y="9.44" width="3" height="22.56"/><rect x="88" y="20.81" width="3" height="11.19"/><rect x="92" y="26.50" width="3" height="5.50"/><rect x="96" y="25.36" width="3" height="6.64"/><rect x="100" y="6.71" width="3" height="25.29"/><rect x="104" y="16.15" width="3" height="15.85"/><rect x="108" y="10.80" width="3" height="21.20"/><rect x="112" y="3.07" width="3" height="28.93"/><rect x="116" y="5.12" width="3" height="26.88"/><rect x="120" y="21.84" width="3" height="10.16"/><rect x="124" y="1.82" width="3" height="30.18"/></svg>
+      <p class="v__hex">bcea241329168f0925120da1661ef74518abedd0…</p>
     </div>
-    <div class="tag">GPS stays on the phone<br>only the hash goes on chain</div>
+    <div class="v v--bad">
+      <p class="v__label">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 6.5 6.5 17.5M6.5 6.5l11 11"/></svg>
+        one fix moved 11 metres
+      </p>
+      <svg class="v__bars" viewBox="0 0 127 32" preserveAspectRatio="none"><rect x="0" y="2.96" width="3" height="29.04"/><rect x="4" y="3.30" width="3" height="28.70"/><rect x="8" y="13.99" width="3" height="18.01"/><rect x="12" y="12.40" width="3" height="19.60"/><rect x="16" y="7.73" width="3" height="24.27"/><rect x="20" y="25.02" width="3" height="6.98"/><rect x="24" y="14.10" width="3" height="17.90"/><rect x="28" y="28.77" width="3" height="3.23"/><rect x="32" y="4.32" width="3" height="27.68"/><rect x="36" y="2.50" width="3" height="29.50"/><rect x="40" y="18.31" width="3" height="13.69"/><rect x="44" y="3.18" width="3" height="28.82"/><rect x="48" y="17.40" width="3" height="14.60"/><rect x="52" y="19.11" width="3" height="12.89"/><rect x="56" y="8.76" width="3" height="23.24"/><rect x="60" y="19.79" width="3" height="12.21"/><rect x="64" y="28.32" width="3" height="3.68"/><rect x="68" y="21.95" width="3" height="10.05"/><rect x="72" y="0.57" width="3" height="31.43"/><rect x="76" y="10.46" width="3" height="21.54"/><rect x="80" y="5.57" width="3" height="26.43"/><rect x="84" y="0.00" width="3" height="32.00"/><rect x="88" y="16.04" width="3" height="15.96"/><rect x="92" y="22.18" width="3" height="9.82"/><rect x="96" y="1.36" width="3" height="30.64"/><rect x="100" y="25.59" width="3" height="6.41"/><rect x="104" y="10.69" width="3" height="21.31"/><rect x="108" y="1.02" width="3" height="30.98"/><rect x="112" y="23.77" width="3" height="8.23"/><rect x="116" y="3.98" width="3" height="28.02"/><rect x="120" y="18.42" width="3" height="13.58"/><rect x="124" y="17.06" width="3" height="14.94"/></svg>
+      <p class="v__hex">e5e28492bb238302d9e95ee36657b251063efaa3…</p>
+    </div>
   </div>
 </div>
 </body></html>
