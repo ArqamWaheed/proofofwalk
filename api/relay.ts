@@ -5,6 +5,9 @@ const MEMO_PROGRAM_ID = new PublicKey("MemoSq4gqABAXKb96qnH8TysNcWxMyWCqXgDLGmfc
 const MEMO_MAX_BYTES = 566;
 const RPC = process.env.SOLANA_RPC_URL ?? "https://api.devnet.solana.com";
 
+/** Comfortably above a signed one-memo transaction, far below anything abusive. */
+const MAX_TX_BASE64 = 4_096;
+
 function relayerKeypair(): Keypair {
   const raw = process.env.SOLANA_RELAYER_SECRET;
   if (!raw) throw new Error("SOLANA_RELAYER_SECRET is not set");
@@ -47,6 +50,12 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const { transaction } = req.body ?? {};
     if (typeof transaction !== "string") {
       return res.status(400).json({ error: "expected { transaction: base64 }" });
+    }
+    // A signed single-memo transaction is well under a kilobyte. Refusing
+    // anything larger before decoding keeps an endpoint that spends money from
+    // being asked to allocate megabytes on demand.
+    if (transaction.length > MAX_TX_BASE64) {
+      return res.status(413).json({ error: "transaction payload is too large" });
     }
 
     const relayer = relayerKeypair();

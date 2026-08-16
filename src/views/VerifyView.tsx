@@ -1,12 +1,24 @@
 import { useState } from "react";
 import { Connection } from "@solana/web3.js";
-import { hashTrace, type Trace } from "../lib/trace";
+import { hashTrace } from "../lib/trace";
 import { readMemoFromTransaction, type Attestation } from "../lib/attest";
+import { parseAttestationJson, parseTraceJson } from "../lib/schema";
 import { RPC_URL, explorerTx } from "../lib/config";
 
+/**
+ * The outcomes are deliberately separate.
+ *
+ * "This trace does not match" is an accusation. "This file is malformed" and
+ * "that transaction is not a walk attestation" are not. Collapsing them into one
+ * failure state is the bug this view previously shipped, and telling them apart
+ * is most of what this screen is for.
+ */
 type Result =
   | { kind: "match"; attestation: Attestation; blockTime: number | null; signers: string[] }
   | { kind: "mismatch"; expected: string; actual: string; attestation: Attestation }
+  | { kind: "bad-trace"; message: string }
+  | { kind: "bad-memo"; message: string }
+  | { kind: "not-found" }
   | { kind: "error"; message: string };
 
 export function VerifyView() {
@@ -23,22 +35,30 @@ export function VerifyView() {
     setBusy(true);
     setResult(null);
     try {
-      const trace = JSON.parse(traceJson) as Trace;
-      if (!Array.isArray(trace.fixes)) throw new Error("that file has no `fixes` array");
+      const trace = parseTraceJson(traceJson);
+      if (!trace.ok) {
+        setResult({ kind: "bad-trace", message: trace.error });
+        return;
+      }
 
       const connection = new Connection(RPC_URL, "confirmed");
       const found = await readMemoFromTransaction(connection, signature.trim());
       if (!found) {
-        throw new Error("no such transaction on devnet, or it carries no memo");
+        setResult({ kind: "not-found" });
+        return;
       }
 
-      const attestation = JSON.parse(found.memo) as Attestation;
-      const actual = await hashTrace(trace);
+      const attestation = parseAttestationJson(found.memo);
+      if (!attestation.ok) {
+        setResult({ kind: "bad-memo", message: attestation.error });
+        return;
+      }
 
+      const actual = await hashTrace(trace.value);
       setResult(
-        actual === attestation.h
-          ? { kind: "match", attestation, blockTime: found.blockTime, signers: found.signers }
-          : { kind: "mismatch", expected: attestation.h, actual, attestation },
+        actual === attestation.value.h
+          ? { kind: "match", attestation: attestation.value, blockTime: found.blockTime, signers: found.signers }
+          : { kind: "mismatch", expected: attestation.value.h, actual, attestation: attestation.value },
       );
     } catch (e) {
       setResult({ kind: "error", message: e instanceof Error ? e.message : "verification failed" });
@@ -110,13 +130,47 @@ export function VerifyView() {
         <div className="panel panel--bad">
           <h3>No match</h3>
           <p>
-            This transaction is real, but it does not describe this trace. The
-            file you were given is not the route that was committed.
+            This transaction is a valid walk attestation, and this file is a valid
+            trace — but they are not the same walk. The route you were given is
+            not the route that was committed.
           </p>
           <pre className="memo">
 on chain:  {result.expected}
 this file: {result.actual}
           </pre>
+        </div>
+      )}
+
+      {result?.kind === "bad-trace" && (
+        <div className="panel">
+          <h3>That file isn't a readable trace</h3>
+          <p className="hint">{result.message}</p>
+          <p>
+            This says nothing about the walk — the file could not be read, so
+            there was nothing to compare. Ask for the trace file the app
+            downloaded, unedited.
+          </p>
+        </div>
+      )}
+
+      {result?.kind === "bad-memo" && (
+        <div className="panel">
+          <h3>That transaction isn't a walk attestation</h3>
+          <p className="hint">{result.message}</p>
+          <p>
+            The transaction exists and carries a memo, but not one this app
+            wrote. Check you were given the right signature.
+          </p>
+        </div>
+      )}
+
+      {result?.kind === "not-found" && (
+        <div className="panel">
+          <h3>No such transaction</h3>
+          <p>
+            Nothing with that signature is on devnet, or it carries no memo.
+            Confirmed transactions can take a moment to appear.
+          </p>
         </div>
       )}
 
