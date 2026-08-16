@@ -12,7 +12,7 @@ published at all — see Blockers.
 ### M1 — Attestation spine ✅
 - Deterministic trace canonicalisation and SHA-256 hashing (`src/lib/trace.ts`)
 - SPL Memo attestation construction (`src/lib/attest.ts`)
-- Fee-relayer endpoints with instruction validation (`api/relay.mts`, `api/relayer.mts`)
+- Fee-relayer endpoints with instruction validation (`api/relay.ts`, `api/relayer.ts`)
 - Verified end-to-end on live devnet: walker is the sole memo signer, hash
   reproduces on read-back, tampered trace rejected (`scripts/e2e.ts`)
 

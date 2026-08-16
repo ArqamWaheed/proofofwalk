@@ -30,5 +30,10 @@
     "vitest": "^4.1.10"
   },
   "description": "Verifiable dog-walk attestations on Solana",
-  "license": "Apache-2.0"
+  "license": "Apache-2.0",
+  "overrides": {
+    "rpc-websockets": {
+      "uuid": "^9.0.1"
+    }
+  }
 }
