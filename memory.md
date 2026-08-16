@@ -4,8 +4,10 @@ Facts a future session should not have to rediscover. Not a task log.
 
 ## Why this project exists in this form
 
-The repository is named `SecondChance` because it originally targeted a
-different idea — a Snowflake Cortex study of shelter-dog adoption data. That
+The repository was named `SecondChance` until 2026-08-17, when it was renamed
+to `proofofwalk`. GitHub redirects the old URL, but new links should use
+`github.com/ArqamWaheed/proofofwalk`. It carried the old name because it
+originally targeted a different idea — a Snowflake Cortex study of shelter-dog adoption data. That
 idea was abandoned at the platform gate, not for design reasons:
 
 > **Snowflake trial accounts cannot run Cortex AI functions.** `AI_CLASSIFY`,

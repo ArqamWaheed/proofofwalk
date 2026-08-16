@@ -37,3 +37,6 @@ dist-ssr
 
 # Vercel CLI link state
 .vercel
+
+# Personal working notes. Not project documentation.
+voice.md
