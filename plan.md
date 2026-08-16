@@ -4,7 +4,7 @@
 
 ## Current milestone
 
-**M3 — Hardening and tests.** In progress.
+**M4 — Deploy.** Blocked on the user's Vercel account.
 
 ## Completed
 
@@ -22,21 +22,24 @@
 - Walk and Verify views, dark responsive styling
 - Clean `tsc -b && vite build`
 
+### M3 — Hardening and tests ✅
+- Boundary validation for untrusted trace files and on-chain memos
+  (`src/lib/schema.ts`), replacing both `as` casts in `VerifyView`
+- Verifier reports malformed input, an unrelated memo, and a missing
+  transaction as distinct outcomes from a genuine hash mismatch
+- Relay payload bounded before decoding
+- Vitest: 54 offline tests across canonical form, hashing, geometry,
+  validation, and the walker-signs/relayer-pays split
+
 ## In progress
 
-### M3 — Hardening and tests
-- [ ] Boundary validation for untrusted trace files and on-chain memos
-      (`src/lib/schema.ts`), replacing the two `as` casts in `VerifyView`
-- [ ] Verifier must report *malformed input* distinctly from *hash mismatch*
-- [ ] Vitest suite: canonical-form stability, hash determinism, coordinate
-      pinning, noise gate, memo size limit, validator accept/reject
-
-## Pending
-
 ### M4 — Deploy
-- [ ] `vercel.json` and Vercel project link **(needs the user's account)**
+- [x] `vercel.json` and `.env.example`
+- [ ] Vercel project link **(needs the user's account)**
 - [ ] `SOLANA_RELAYER_SECRET` set as a Vercel environment variable
 - [ ] Live URL confirmed in a fresh incognito window, desktop and phone
+
+## Pending
 
 ### M5 — Submission
 - [ ] 60–75s screen recording, unlisted YouTube
@@ -51,13 +54,14 @@
   `origin/main` contains them. Requires `git push -f origin main`, which the
   agent is not permitted to run (see `AGENTS.md`, and §22 of the operating
   protocol). **User action.**
-- **Vercel deploy needs the user's account.** M4 cannot start without it.
+- **Vercel deploy needs the user's account.** Config is committed; the link
+  and the environment variable are the remaining steps.
 
 ## Immediate next actions
 
-1. Land M3 (validation, then tests), committing each separately.
-2. User: force push to scrub the strategy docs from the public repo.
-3. User: link Vercel so M4 can proceed.
+1. **User:** force push to scrub the strategy docs from the public repo.
+2. **User:** link Vercel, then set `SOLANA_RELAYER_SECRET`, so M4 can finish.
+3. Once deployed: browser pass on desktop and phone, then M5.
 
 ## Explicitly out of scope
 

@@ -55,6 +55,11 @@ route that was committed"* — an accusation of fraud caused by a broken file.
 Fixed in `src/lib/schema.ts`. The distinction is a product requirement, not a
 nicety: this app exists to tell those two situations apart.
 
+The canonical-form test in `src/lib/__tests__/trace.test.ts` pins an exact
+string. That is intentional: if it fails, the hashed bytes have changed and
+every attestation already on chain has stopped verifying. Treat a failure there
+as a design decision to make, never as a fixture to update.
+
 ## Dependency decisions
 
 - **No schema library.** Boundary validation is hand-written guards in
