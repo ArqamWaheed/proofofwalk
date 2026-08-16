@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Connection } from "@solana/web3.js";
 import { hashTrace } from "../lib/trace";
 import { readMemoFromTransaction, type Attestation } from "../lib/attest";
@@ -6,6 +6,7 @@ import { parseAttestationJson, parseTraceJson } from "../lib/schema";
 import { RPC_URL, explorerTx } from "../lib/config";
 import { Seal } from "../components/Seal";
 import { Icon } from "../components/Icon";
+import { commitFreshness, describeDelay } from "../lib/freshness";
 
 /**
  * The outcomes are deliberately separate.
@@ -25,14 +26,53 @@ type Result =
 
 const shortKey = (key: string) => `${key.slice(0, 4)}…${key.slice(-4)}`;
 
+/** A walk this app really committed to devnet, shipped so the claim is checkable. */
+const EXAMPLE_SIGNATURE =
+  "2q3GiHfvYBPyh8dNdYMWRTz6aPWQjjhAdJAm12g4UQ1CYAzZcNZNVAgDHJE4FmLUNVN1Qw7fzVgmgAUoSAHFhYST";
+
 export function VerifyView() {
   const [signature, setSignature] = useState("");
   const [traceJson, setTraceJson] = useState("");
   const [result, setResult] = useState<Result | null>(null);
   const [busy, setBusy] = useState(false);
 
+  // A shareable ?tx=… link. The whole claim of this project is checkable, so
+  // handing someone a URL that arrives pre-loaded costs nothing and removes the
+  // main reason people never check anything: setup.
+  useEffect(() => {
+    const tx = new URLSearchParams(window.location.search).get("tx");
+    if (tx) setSignature(tx.trim());
+  }, []);
+
   async function onFile(file: File) {
     setTraceJson(await file.text());
+  }
+
+  async function loadExample() {
+    setResult(null);
+    const res = await fetch("/example-walk.json");
+    setTraceJson(await res.text());
+    setSignature(EXAMPLE_SIGNATURE);
+  }
+
+  /**
+   * Move one fix by 0.0001 degrees — about 11 metres, and the smallest edit the
+   * 5dp coordinate pinning can even express. Letting the reader do this
+   * themselves is more convincing than telling them it would fail.
+   */
+  function tamper() {
+    const parsed = parseTraceJson(traceJson);
+    if (!parsed.ok) return;
+    const trace = parsed.value;
+    const i = Math.floor(trace.fixes.length / 2);
+    const edited = {
+      ...trace,
+      fixes: trace.fixes.map((f, n) =>
+        n === i ? { ...f, lat: Math.round((f.lat + 0.0001) * 1e5) / 1e5 } : f,
+      ),
+    };
+    setResult(null);
+    setTraceJson(JSON.stringify(edited));
   }
 
   async function verify() {
@@ -78,6 +118,17 @@ export function VerifyView() {
         gave you. The hash is recomputed here, on your machine, and compared with
         what the chain already recorded.
       </p>
+
+      <div className="tryit">
+        <p className="tryit__text">
+          Nothing to hand? Load a walk this app committed to devnet, and check it
+          yourself.
+        </p>
+        <button className="btn" onClick={loadExample}>
+          <Icon name="paw" size={16} />
+          Load the example walk
+        </button>
+      </div>
 
       <label className="field">
         <span className="field__label">Transaction signature</span>
@@ -141,6 +192,50 @@ export function VerifyView() {
             </p>
 
             <Seal hash={result.attestation.h} label="on chain and in this file" />
+
+            {(() => {
+              const f = commitFreshness(result.attestation, result.blockTime);
+              if (f.kind === "unknown") return null;
+              const gap = describeDelay(f.delaySeconds);
+              if (f.kind === "prompt") {
+                return (
+                  <p className="hint">
+                    Committed {gap} after the walk ended — while it was still fresh.
+                  </p>
+                );
+              }
+              return (
+                <p className={f.kind === "delayed" ? "notice" : "notice notice--warn"}>
+                  <Icon name="alert" size={17} />
+                  <span>
+                    {f.kind === "impossible" ? (
+                      <>
+                        The block was written {gap} <strong>before</strong> this walk
+                        could have ended. That is either a clock disagreement or a
+                        trace whose timestamps were not recorded when it claims.
+                      </>
+                    ) : (
+                      <>
+                        Committed <strong>{gap}</strong> after the walk ended. The hash
+                        proves which route was recorded, not when it was recorded — so
+                        an old trace can be committed again later. A delay this long has
+                        innocent explanations, but it is worth knowing about.
+                      </>
+                    )}
+                  </span>
+                </p>
+              );
+            })()}
+
+            <div className="row">
+              <button className="btn" onClick={tamper}>
+                Now edit one coordinate
+              </button>
+            </div>
+            <p className="hint">
+              Moves a single fix about 11 metres — the smallest change the format
+              can express — then verify again.
+            </p>
 
             {result.attestation.sim === 1 && (
               <p className="notice notice--warn">

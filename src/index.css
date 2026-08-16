@@ -648,3 +648,19 @@ code {
   .app { padding-inline: var(--sp-5); }
   .hero__sub { font-size: 1rem; }
 }
+
+/* ---------- try-it invitation ---------- */
+
+.tryit {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4);
+  background: color-mix(in oklab, var(--seal) 7%, var(--slab));
+  border: 1px solid color-mix(in oklab, var(--seal) 30%, var(--rule-soft));
+  border-radius: var(--r-md);
+}
+
+.tryit__text { margin: 0; flex: 1 1 14rem; font-size: 0.88rem; color: var(--chalk-dim); }
