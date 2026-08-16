@@ -188,7 +188,7 @@ body::before {
 .switch {
   position: relative;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--sp-1);
   margin-bottom: var(--sp-5);
   padding: var(--sp-1);
@@ -203,7 +203,7 @@ body::before {
   z-index: 0;
   top: var(--sp-1);
   left: var(--sp-1);
-  width: calc(50% - var(--sp-1) - 1px);
+  width: calc(33.333% - var(--sp-1) * 0.667 - 1px);
   height: calc(100% - var(--sp-1) * 2);
   background: var(--slab-2);
   border: 1px solid var(--rule);
@@ -212,6 +212,7 @@ body::before {
 }
 
 .switch[data-active="verify"]::before { transform: translateX(calc(100% + var(--sp-1) + 2px)); }
+.switch[data-active="log"]::before { transform: translateX(calc(200% + var(--sp-1) * 2 + 4px)); }
 
 .switch__tab {
   position: relative;
@@ -664,3 +665,67 @@ code {
 }
 
 .tryit__text { margin: 0; flex: 1 1 14rem; font-size: 0.88rem; color: var(--chalk-dim); }
+
+/* ---------- the dog's walk log ---------- */
+
+.log { display: flex; flex-direction: column; gap: var(--sp-2); margin: 0; padding: 0; list-style: none; }
+
+.log__row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: var(--sp-3);
+  background: var(--slab);
+  border: 1px solid var(--rule-soft);
+  border-radius: var(--r-md);
+}
+
+.log__head { display: flex; align-items: center; gap: var(--sp-2); }
+
+.log__dog {
+  font-family: var(--display);
+  font-size: 1.02rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+}
+
+.log__flag {
+  padding: 0.1rem 0.45rem;
+  border: 1px solid color-mix(in oklab, var(--ember) 40%, var(--rule));
+  border-radius: 999px;
+  background: color-mix(in oklab, var(--ember) 12%, transparent);
+  font-family: var(--mono);
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ember);
+}
+
+.log__meta {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 0.72rem;
+  color: var(--chalk-dim);
+}
+
+.log__warn {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  margin: 0;
+  font-size: 0.76rem;
+  color: var(--ember);
+}
+
+.log__check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  align-self: flex-start;
+  margin-top: 0.15rem;
+  font-family: var(--mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--seal);
+}

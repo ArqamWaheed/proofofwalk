@@ -1,14 +1,16 @@
 import { useRef, useState } from "react";
 import { WalkView } from "./views/WalkView";
 import { VerifyView } from "./views/VerifyView";
+import { LogView } from "./views/LogView";
 import { Icon } from "./components/Icon";
 import { CLUSTER } from "./lib/config";
 
-type Tab = "walk" | "verify";
+type Tab = "walk" | "verify" | "log";
 
-const TABS: ReadonlyArray<{ id: Tab; label: string; icon: "route" | "shield" }> = [
+const TABS: ReadonlyArray<{ id: Tab; label: string; icon: "route" | "shield" | "paw" }> = [
   { id: "walk", label: "Walk", icon: "route" },
   { id: "verify", label: "Verify", icon: "shield" },
+  { id: "log", label: "Log", icon: "paw" },
 ];
 
 /**
@@ -21,14 +23,16 @@ const initialTab = (): Tab =>
 
 export default function App() {
   const [tab, setTab] = useState<Tab>(initialTab);
-  const tabRefs = useRef<Record<Tab, HTMLButtonElement | null>>({ walk: null, verify: null });
+  const tabRefs = useRef<Record<Tab, HTMLButtonElement | null>>({ walk: null, verify: null, log: null });
 
   // Tablists are expected to move between tabs with the arrow keys; without
   // this a keyboard user has to tab out of the control and back in.
   function onKeyDown(event: React.KeyboardEvent<HTMLDivElement>) {
     if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
     event.preventDefault();
-    const next = tab === "walk" ? "verify" : "walk";
+    const order = TABS.map((t) => t.id);
+    const step = event.key === "ArrowRight" ? 1 : -1;
+    const next = order[(order.indexOf(tab) + step + order.length) % order.length];
     setTab(next);
     tabRefs.current[next]?.focus();
   }
@@ -84,7 +88,9 @@ export default function App() {
       </div>
 
       <main id={`panel-${tab}`} role="tabpanel" aria-labelledby={`tab-${tab}`} tabIndex={-1}>
-        {tab === "walk" ? <WalkView /> : <VerifyView />}
+        {tab === "walk" && <WalkView />}
+        {tab === "verify" && <VerifyView />}
+        {tab === "log" && <LogView />}
       </main>
 
       <footer className="foot">
