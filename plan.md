@@ -94,7 +94,13 @@ the Solana case at the same time:
 - [x] Post drafted against the official template (`docs/SUBMISSION.md`)
 - [x] Recording shot list (`docs/RECORDING.md`)
 - [x] Reproducible example committed (`docs/example-walk.json` + signature in README)
-- [ ] 60–75s screen recording, unlisted YouTube **(user)**
+- [x] 60–75s screen recording — 65.7s, 1280x720, held locally in `docs/media/`
+      (gitignored, not published)
+      h264 + aac. Recorded by `scripts/record-demo.mjs` (Playwright records the
+      browser context directly; x11grab returns black on this Wayland session),
+      narrated by `scripts/narrate-demo.sh` using Piper offline TTS against the
+      caption timings the run itself logged
+- [ ] Upload the local MP4 to YouTube as unlisted and paste the URL **(user)**
 - [x] Cover image, 1000×420 (`docs/cover.png`, source `docs/cover.html`)
 - [ ] DEV post using the official template verbatim, all five required sections
 - [ ] Tags: `devchallenge`, `weekendchallenge` — exactly the pair the official

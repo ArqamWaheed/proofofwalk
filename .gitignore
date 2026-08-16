@@ -40,3 +40,6 @@ dist-ssr
 
 # Personal working notes. Not project documentation.
 voice.md
+
+# Demo media. Large binaries; kept local, not published.
+docs/media/

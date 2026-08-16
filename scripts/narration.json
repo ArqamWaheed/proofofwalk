@@ -1,0 +1,16 @@
+[
+ {"at": 2955,  "say": "Your dog walker says they went."},
+ {"at": 6271,  "say": "You pay someone to walk your dog. You weren't there."},
+ {"at": 9678,  "say": "This link opens a walk already committed to Solana devnet."},
+ {"at": 14131, "say": "Load the trace the walker handed over."},
+ {"at": 18465, "say": "The hash is recomputed here, in your browser."},
+ {"at": 22723, "say": "Match. This is the trace that was committed."},
+ {"at": 25929, "say": "Committed twenty eight seconds after the walk ended."},
+ {"at": 30469, "say": "Now move a single G P S fix. Eleven metres."},
+ {"at": 36670, "say": "No match. Same walk, one digit different."},
+ {"at": 39877, "say": "Each hash drawn as thirty two bars. The difference is visible."},
+ {"at": 48475, "say": "An owner pastes the key their walker gave them."},
+ {"at": 52496, "say": "Reading every walk this key ever committed."},
+ {"at": 55821, "say": "And it isn't one receipt. It's the dog's record."},
+ {"at": 61008, "say": "The route never leaves the phone. Only the hash goes on chain."}
+]
