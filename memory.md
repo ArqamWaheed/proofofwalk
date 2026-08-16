@@ -95,6 +95,13 @@ Two things this note originally understated, both measured 2026-08-16 13:20 UTC:
    the remote ever looks like it is missing everything, this is why — it is not
    a fetch problem.
 2. **A force push does not remove the old commit from GitHub.** Orphaned commits
-   stay reachable by SHA indefinitely; `/commit/2265652` keeps serving the
-   strategy docs. Only deleting and recreating the repository actually removes
-   them. Do not report a force push as having scrubbed anything.
+   stay reachable indefinitely; `/commit/2265652` keeps serving the strategy
+   docs, and the repo's Activity tab links that SHA publicly, so it is browsable
+   rather than merely guessable. Only deleting and recreating the repository
+   actually removes them. Do not report a force push as having scrubbed anything.
+
+**Resolved 2026-08-16.** The force push was run and `origin/main` is clean. The
+user was shown both facts above and decided the orphan is acceptable — the
+requirement is that the *current* tree is clean, not that history is
+unrecoverable. This is a closed decision: do not re-raise it, and do not propose
+deleting the repository.

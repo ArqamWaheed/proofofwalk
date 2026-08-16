@@ -70,25 +70,27 @@ published at all — see Blockers.
   judge visiting the repo today sees the strategy docs and none of the project.
   Fixing this needs `git push -f origin main`, which the agent is not permitted
   to run (see `AGENTS.md`). **User action, and the highest priority item here.**
-- **A force push does not fully scrub GitHub.** Orphaned commits stay reachable
-  by SHA — `/commit/2265652` will still serve the strategy docs afterwards.
-  Deleting and recreating the repository is the only reliable removal. The user
-  chose on 2026-08-16 to force push now and clean up after the deadline.
+- ~~A force push does not fully scrub GitHub.~~ **Settled 2026-08-16: accepted,
+  not a blocker.** The force push landed; `origin/main` is clean and carries all
+  eleven commits. Commit `2265652` survives as an orphan and still serves the
+  four `0N-` documents, and the repo's Activity tab links it publicly
+  (`force pushed to main • 2265652…0e5d1a7`), so it is browsable rather than
+  SHA-only. The user reviewed both facts and decided this is acceptable: what
+  matters is that the *current* tree is clean. Do not re-raise this, and do not
+  delete/recreate the repository.
 - **Vercel deploy needs the user's account.** Config is committed; the link
   and the environment variable are the remaining steps.
 
 ## Immediate next actions
 
-1. **User:** `git push -f origin main` — publishes the nine commits and
-   replaces the doc-leaking root. Nothing else can proceed until this lands.
+1. ~~Force push.~~ **Done 2026-08-16 ~19:30 UTC.** Eleven commits published,
+   local and remote in sync, no secrets or `0N-` documents in the tree.
 2. **User:** link Vercel, then set `SOLANA_RELAYER_SECRET`, so M4 can finish.
 3. Once deployed: browser pass on desktop and phone, and exercise the verifier's
    match/mismatch cards against a real devnet transaction — those two states
    have never been seen with live data, because `/api/*` does not run under
    `vite dev`.
 4. Then M5: DEV post draft and the screen recording.
-5. **User, after the deadline:** delete and recreate the GitHub repo to remove
-   the orphaned `2265652`.
 
 ## Explicitly out of scope
 
