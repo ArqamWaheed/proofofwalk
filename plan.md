@@ -74,6 +74,20 @@ Shipped in response:
 - Commit-freshness reporting (`src/lib/freshness.ts`, 9 tests) closing the
   replay gap: a hash proves which route, never when
 
+### M7 — Winning the brief, not just the build ✅
+Scored honestly against the five published criteria, the weak one was
+**Relevance to Theme**: every rival entry is *about a dog*, ours was about a
+*walker*, and the dog was a name string. Two additions close that and deepen
+the Solana case at the same time:
+
+- **Log tab** (`src/lib/history.ts`, 4 tests) — a walker's whole committed
+  record read back off devnet. Turns a receipt about one person's honesty into
+  a record about a dog's week, and exercises Solana's read path, not just the
+  write
+- **`npm run verify`** (`scripts/verify.ts`) — the same check offline, so
+  verifying never requires trusting this app. Exit 0/2/3 keeps match, mismatch
+  and unreadable distinct at the shell, as they are in the UI
+
 ## Pending
 
 ### M5 — Submission

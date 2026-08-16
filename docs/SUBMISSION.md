@@ -213,6 +213,57 @@ first was malformed-versus-mismatch; this is replay-versus-delay. Both are the
 same mistake in different clothes: letting the system imply an accusation it
 cannot actually support.
 
+### The log: what a chain is actually for
+
+One attestation answers a narrow question — *did this walk happen?* The question
+an owner really has is broader: *what has this walker done for my dog?*
+
+The Log tab answers it by reading a walker's whole record back off devnet with
+`getSignaturesForAddress`, validating every memo rather than assuming it is ours
+(anyone can write bytes into a memo), and requiring that the key actually
+**signed** the memo instruction — otherwise anyone could pad someone else's log
+by naming their key as a read-only account.
+
+The asymmetry is the point, and the interface says it plainly:
+
+> A walker can decline to record a walk — that shows up as a gap. What they
+> cannot do is delete one they already committed, or invent one they didn't.
+
+Absence is ambiguous. Presence is not. So an empty log says *"this is not
+evidence of anything on its own"* rather than quietly implying neglect.
+
+This is also where the project stopped being about a walker and started being
+about a dog. A single receipt is about one person's honesty. A log is Rufus —
+his walks, his week, his distance, in a record nobody can quietly revise.
+
+### Or don't trust this app either
+
+An app that asks you to stop taking your walker's word for it has no business
+asking you to take *its* word instead. Checking a claim shouldn't require
+believing a second claim about the page doing the checking.
+
+So the same verification runs offline, in about a hundred lines:
+
+```
+npm run verify -- <signature> docs/example-walk.json
+```
+
+```
+MATCH
+
+  dog          Rufus
+  on chain     bcea241329168f0925120da1661ef74518abedd038ac481620c471a0e4d23fef
+  this file    bcea241329168f0925120da1661ef74518abedd038ac481620c471a0e4d23fef
+  memo signer  2VHGyh3pUniStLvhey7RTFJeTzVeubvne4Rb75NTM3Df
+```
+
+Exit 0 for a match, 2 for a mismatch, 3 for a file it could not read — three
+outcomes, three codes, the same distinction the UI makes. It shares exactly one
+file with the website: `src/lib/trace.ts`, which defines the hashed bytes.
+
+Two independent implementations reaching the same hash is worth more than either
+one insisting it is right.
+
 ### No map tiles, on purpose
 
 The route is drawn from the fixes themselves as a bare polyline on graph paper.

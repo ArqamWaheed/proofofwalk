@@ -108,7 +108,12 @@ export function LogView() {
                   {summary.dogs.length === 1 ? "Walking " : "Walking for "}
                   <strong>{summary.dogs.join(", ")}</strong>
                   {summary.simulated > 0 && (
-                    <> · {summary.simulated} of these {summary.simulated === 1 ? "is" : "are"} a simulated walk</>
+                    <>
+                      {" · "}
+                      {summary.simulated === summary.walks
+                        ? summary.walks === 1 ? "simulated" : "all simulated"
+                        : `${summary.simulated} of ${summary.walks} simulated`}
+                    </>
                   )}
                 </p>
               )}

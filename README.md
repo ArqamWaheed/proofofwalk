@@ -31,6 +31,22 @@ Being able to falsify the claim in two clicks is a better argument than any
 paragraph here, and a project about not taking people's word for things has no
 business asking you to take mine.
 
+### Or don't trust this app either
+
+Checking a claim shouldn't require believing a *second* claim — that the page
+doing the checking is honest. So the same verification runs offline:
+
+```
+npm install
+npm run verify -- 2q3GiHfvYBPyh8dNdYMWRTz6aPWQjjhAdJAm12g4UQ1CYAzZcNZNVAgDHJE4FmLUNVN1Qw7fzVgmgAUoSAHFhYST docs/example-walk.json
+```
+
+It prints MATCH, the hash from the chain, the hash of your file, and who signed
+the memo. Exit code 0 for a match, 2 for a mismatch, 3 for a file it could not
+read — because those are three different things. `scripts/verify.ts` is about a
+hundred lines and shares exactly one file with the website: the definition of
+which bytes get hashed.
+
 Built for the [DEV Weekend Challenge: Dog Days Edition](https://dev.to/challenges/weekend-2026-08-13).
 
 ## Why a blockchain, honestly
