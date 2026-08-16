@@ -24,10 +24,21 @@ export type Attestation = {
   n: number;
   /** SHA-256 of the canonical trace. The trace itself never leaves the phone. */
   h: string;
+  /**
+   * Present and 1 when the trace came from the built-in simulator.
+   *
+   * A demo walk lands on the same public devnet as a real one, so the record
+   * itself has to carry the distinction. Anyone reading this memo later can
+   * tell the difference without taking our word for it.
+   */
+  sim?: 1;
 };
 
-export async function buildAttestation(trace: Trace): Promise<Attestation> {
-  return {
+export async function buildAttestation(
+  trace: Trace,
+  opts?: { simulated?: boolean },
+): Promise<Attestation> {
+  const a: Attestation = {
     v: 1,
     dog: trace.dog,
     t0: trace.fixes[0]?.t ?? 0,
@@ -36,6 +47,8 @@ export async function buildAttestation(trace: Trace): Promise<Attestation> {
     n: trace.fixes.length,
     h: await hashTrace(trace),
   };
+  if (opts?.simulated) a.sim = 1;
+  return a;
 }
 
 export function encodeMemo(a: Attestation): string {
