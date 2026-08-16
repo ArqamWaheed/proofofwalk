@@ -86,3 +86,15 @@ The first commit (`2265652`, pushed) contained four private strategy documents.
 They were removed from tracking in the amended local commit, but **the pushed
 commit on GitHub still contains them** unless a force push has since been run.
 Verify `git log origin/main` before assuming the public repo is clean.
+
+Two things this note originally understated, both measured 2026-08-16 13:20 UTC:
+
+1. **The work was never pushed at all.** `origin/main` was a single commit while
+   local `main` had nine. Amending the root left the two histories without a
+   common ancestor, so an ordinary `git push` fails and only `-f` succeeds. If
+   the remote ever looks like it is missing everything, this is why — it is not
+   a fetch problem.
+2. **A force push does not remove the old commit from GitHub.** Orphaned commits
+   stay reachable by SHA indefinitely; `/commit/2265652` keeps serving the
+   strategy docs. Only deleting and recreating the repository actually removes
+   them. Do not report a force push as having scrubbed anything.

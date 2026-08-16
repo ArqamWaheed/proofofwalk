@@ -4,7 +4,8 @@
 
 ## Current milestone
 
-**M4 — Deploy.** Blocked on the user's Vercel account.
+**M4 — Deploy.** Blocked on the user's Vercel account, and on the repo being
+published at all — see Blockers.
 
 ## Completed
 
@@ -31,6 +32,15 @@
 - Vitest: 54 offline tests across canonical form, hashing, geometry,
   validation, and the walker-signs/relayer-pays split
 
+### M3.5 — UI redesign ✅
+- "Dusk and seal" direction: twilight indigo ground, `--ember` for a claim being
+  recorded and `--seal` for a fact settled on chain (`src/index.css`)
+- `src/components/Seal.tsx` draws a SHA-256 as 32 bars so two hashes can be
+  compared by eye; it decides nothing, the verdict is still the string compare
+- Fixed: the dog name input was editable after finishing, so a walker could
+  finish, rename, download, and hand over a trace whose hash no longer matched
+- Raised `--chalk-faint` to #8386ac; the previous value failed AA at 3.96:1
+
 ## In progress
 
 ### M4 — Deploy
@@ -43,25 +53,42 @@
 
 ### M5 — Submission
 - [ ] 60–75s screen recording, unlisted YouTube
-- [ ] Cover image, 1000×420
+- [x] Cover image, 1000×420 (`docs/cover.png`, source `docs/cover.html`)
 - [ ] DEV post using the official template verbatim, all five required sections
-- [ ] Tags: `devchallenge`, `weekendchallenge` + 2 free
+- [ ] Tags: `devchallenge`, `weekendchallenge` — exactly the pair the official
+      prefill sets. An earlier note here said "+ 2 free"; the challenge page
+      requires only `#weekendchallenge` and suggests no others. Do not add more.
 - [ ] Publish with ≥4h margin before 06:59 UTC
 
 ## Blockers
 
-- **Public repo still exposes private strategy docs.** Commit `2265652` on
-  `origin/main` contains them. Requires `git push -f origin main`, which the
-  agent is not permitted to run (see `AGENTS.md`, and §22 of the operating
-  protocol). **User action.**
+- **Nothing has been published, and what is published leaks.** Measured
+  2026-08-16 13:20 UTC: `origin/main` is a *single* commit (`2265652`, the
+  original bootstrap) whose tree still contains all four `0N-` strategy
+  documents. The nine commits of real work exist only on the local machine, and
+  the two histories share no common ancestor because the root was amended. A
+  judge visiting the repo today sees the strategy docs and none of the project.
+  Fixing this needs `git push -f origin main`, which the agent is not permitted
+  to run (see `AGENTS.md`). **User action, and the highest priority item here.**
+- **A force push does not fully scrub GitHub.** Orphaned commits stay reachable
+  by SHA — `/commit/2265652` will still serve the strategy docs afterwards.
+  Deleting and recreating the repository is the only reliable removal. The user
+  chose on 2026-08-16 to force push now and clean up after the deadline.
 - **Vercel deploy needs the user's account.** Config is committed; the link
   and the environment variable are the remaining steps.
 
 ## Immediate next actions
 
-1. **User:** force push to scrub the strategy docs from the public repo.
+1. **User:** `git push -f origin main` — publishes the nine commits and
+   replaces the doc-leaking root. Nothing else can proceed until this lands.
 2. **User:** link Vercel, then set `SOLANA_RELAYER_SECRET`, so M4 can finish.
-3. Once deployed: browser pass on desktop and phone, then M5.
+3. Once deployed: browser pass on desktop and phone, and exercise the verifier's
+   match/mismatch cards against a real devnet transaction — those two states
+   have never been seen with live data, because `/api/*` does not run under
+   `vite dev`.
+4. Then M5: DEV post draft and the screen recording.
+5. **User, after the deadline:** delete and recreate the GitHub repo to remove
+   the orphaned `2265652`.
 
 ## Explicitly out of scope
 
